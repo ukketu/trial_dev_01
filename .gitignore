@@ -48,6 +48,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Local caches for generated research artifacts
+.cache_bys_workflow/
+
 # Environments
 .env
 .venv
