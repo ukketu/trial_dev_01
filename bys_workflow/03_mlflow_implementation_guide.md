@@ -208,9 +208,9 @@ def log_bayes_fit(
 ## 9. 最小導入手順
 
 ```bash
-# Python側
-pip install mlflow arviz pandas matplotlib
-mlflow ui --backend-store-uri ./mlruns
+# Python側（uv管理プロジェクトの場合）
+uv add mlflow arviz pandas matplotlib
+uv run mlflow ui --backend-store-uri ./mlruns
 ```
 
 1. 既存分析コードの最後に、summary CSVと図を保存する処理を追加する。

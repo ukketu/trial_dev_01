@@ -216,9 +216,14 @@ def load_json(path: Path, default):
         return default
 
 
-def save_json(path: Path, obj) -> None:
+def write_text_lf(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+    with path.open("w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+
+def save_json(path: Path, obj) -> None:
+    write_text_lf(path, json.dumps(obj, ensure_ascii=False, indent=2))
 
 
 def split_batches(items: list[tuple[str, str]], max_chars: int = 4200) -> list[list[tuple[str, str]]]:
@@ -411,7 +416,7 @@ def write_catalogue_and_figure_md() -> list[dict]:
             "",
         ]
 
-    FIG_MD.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    write_text_lf(FIG_MD, "\n".join(line.rstrip() for line in lines).rstrip() + "\n")
     return records
 
 
@@ -504,7 +509,7 @@ def write_translation_md() -> int:
             "### 日本語訳（自動翻訳）",
             "",
         ]
-        out += [f"> {line}" for line in ja.splitlines() if line.strip()]
+        out += [f"> {line.strip()}" for line in ja.splitlines() if line.strip()]
         out += [
             "",
             "### 熟語・専門語",
@@ -517,12 +522,12 @@ def write_translation_md() -> int:
             "",
         ]
 
-    TRANS_MD.write_text("\n".join(out).rstrip() + "\n", encoding="utf-8")
+    write_text_lf(TRANS_MD, "\n".join(line.rstrip() for line in out).rstrip() + "\n")
     return len(chunks)
 
 
 def write_mlflow_guide() -> None:
-    MLFLOW_MD.write_text(textwrap.dedent(f"""
+    write_text_lf(MLFLOW_MD, textwrap.dedent(f"""
     # Bayesian WorkflowをMLflowで実装・運用するためのガイド
 
     ## 0. 目的
@@ -733,9 +738,9 @@ def write_mlflow_guide() -> None:
     ## 9. 最小導入手順
 
     ```bash
-    # Python側
-    pip install mlflow arviz pandas matplotlib
-    mlflow ui --backend-store-uri ./mlruns
+    # Python側（uv管理プロジェクトの場合）
+    uv add mlflow arviz pandas matplotlib
+    uv run mlflow ui --backend-store-uri ./mlruns
     ```
 
     1. 既存分析コードの最後に、summary CSVと図を保存する処理を追加する。
@@ -743,11 +748,11 @@ def write_mlflow_guide() -> None:
     3. `rhat_max`, `ess_min`, `divergences`, `loo_elpd_diff`, `pareto_k_gt_0_7` だけでも先にmetric化する。
     4. model_id/prior_spec_id/data_hashをparamsに入れる。
     5. 比較ダッシュボードはMLflow UIでrunをfilterし、必要なら `mlflow.search_runs()` で表を作る。
-    """).strip() + "\n", encoding="utf-8")
+    """).strip() + "\n")
 
 
 def write_readme(records: list[dict], chunks: int) -> None:
-    README.write_text(textwrap.dedent(f"""
+    write_text_lf(README, textwrap.dedent(f"""
     # bys_workflow
 
     Bayesian Workflowを実務で使うための日本語ワークスペースです。
@@ -781,7 +786,7 @@ def write_readme(records: list[dict], chunks: int) -> None:
     ```
 
     `deep-translator` または `argostranslate` が利用可能な環境では、日本語訳キャッシュを更新します。ネットワークが使えない場合は、既存のMarkdownを参照してください。
-    """).strip() + "\n", encoding="utf-8")
+    """).strip() + "\n")
 
 
 def main() -> None:
