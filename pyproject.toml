@@ -1,0 +1,18 @@
+[project]
+name = "bayesian-workflow-pymc"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "arviz>=1.2.0",
+    "ipykernel>=7.3.0",
+    "jax>=0.10.2",
+    "jupyter>=1.1.1",
+    "jupytext>=1.19.4",
+    "matplotlib>=3.11.0",
+    "nbclient>=0.11.0",
+    "numpy>=2.4.6",
+    "numpyro>=0.21.0",
+    "pandas>=3.0.3",
+    "pymc>=6.0.1",
+    "scipy>=1.18.0",
+]
